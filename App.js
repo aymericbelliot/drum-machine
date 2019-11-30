@@ -17,16 +17,22 @@ class App extends React.Component {
         { id: 'X', src1: 'audio/snare/snr_analogging.wav' },
         { id: 'C', src1: 'audio/toms/tom_909fatty.wav' }
       ]
-    }
+    };
   }
 
   playDrum = (id) => {
     if (this.state.power) {
       document.getElementById(id).volume = this.state.volume / 100;
       document.getElementById(id).play();
-      this.setState({display: this.state.drumPad.filter(element => element.id == id)[0].src1});
+
+      // Extract sound file name from drumPad
+      let newDisplay = this.state.drumPad
+        .filter(element => element.id == id)[0].src1
+        .match(RegExp(/[\w]+.wav$/))
+        .toString();
+      this.setState({ display: newDisplay.slice(0, newDisplay.length - 4) });
     }
-  }ƒ
+  }
 
   handleKeyDown = (event) => {
     // Parse key down
@@ -83,14 +89,14 @@ class Controls extends React.Component {
           <label htmlFor="power" className="custom-control-label">Power</label>
         </div>
         <div className="form-group">
-          <input id="display" type="text" readOnly className="form-control-plaintext bg-secondary text-white" value={this.props.display}></input>
+          <input id="display" type="text" readOnly className="form-control-plaintext bg-secondary text-white text-center" value={this.props.display}></input>
         </div>
         <div className="form-group">
           <input type="range" className="form-control-range" id="volume" min="0" max="100" value={this.props.volume} onChange={this.handleVolumeChange.bind(this)}></input>
         </div>
         <div className="custom-control custom-switch">
           <input id="bank" type="checkbox" className="custom-control-input"></input>
-          <label htmlFor="bank" className="custom-control-label" active={"true"}>Bank</label>
+          <label htmlFor="bank" className="custom-control-label">Bank</label>
         </div>
       </div>
     );
